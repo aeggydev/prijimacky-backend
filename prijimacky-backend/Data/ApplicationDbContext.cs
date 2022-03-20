@@ -9,6 +9,6 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseSqlite("Date Source=Application.db");
+        options.UseInMemoryDatabase("Application");
     }
 }

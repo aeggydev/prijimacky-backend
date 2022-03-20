@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using prijimacky_backend.Data;
+using prijimacky_backend.Entities;
 
 namespace prijimacky_backend.Controllers;
 
@@ -15,19 +17,35 @@ public record NewParticipant(
 
 [ApiController]
 [Route("[controller]")]
-public class SignUpController
+public class SignUpController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly Mapper _mapper;
 
     public SignUpController(ApplicationDbContext dbContext)
     {
+        // TODO: Move automapper config elsewhere
+        // TODO: Configure the whole object from here
+        var config = new MapperConfiguration(cfg =>
+            cfg.CreateMap<NewParticipant, Participant>()
+        );
+        _mapper = new Mapper(config);
+
         _dbContext = dbContext;
     }
 
     [HttpPost]
-    public NewParticipant SignUp(NewParticipant newParticipant)
+    public Participant SignUp(NewParticipant newParticipant)
     {
         Console.WriteLine(JsonSerializer.Serialize(newParticipant));
-        return newParticipant;
+        var participant = _mapper.Map<Participant>(newParticipant);
+        participant.SignUpDate = DateTime.Now;
+        participant.VariableSymbol = _dbContext.Participants.Any()
+            ? (int.Parse(_dbContext.Participants.Last().VariableSymbol!) + 1).ToString()
+            : $"{DateTime.Now.Year}001";
+        participant.Ip = HttpContext.Connection.RemoteIpAddress!.ToString();
+        _dbContext.Participants.Add(participant);
+        _dbContext.SaveChanges();
+        return participant;
     }
 }
