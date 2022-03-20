@@ -3,7 +3,7 @@
 public class Participant
 {
     // TODO: Add admin-facing ID
-    public int Id { get; set; } = default;
+    public int Id { get; set; }
     public string ParticipantName { get; set; } = "";
     public string ParticipantSurname { get; set; } = "";
     public string ParentName { get; set; } = "";

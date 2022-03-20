@@ -41,7 +41,7 @@ public class SignUpController : ControllerBase
         var participant = _mapper.Map<Participant>(newParticipant);
         participant.SignUpDate = DateTime.Now;
         participant.VariableSymbol = _dbContext.Participants.Any()
-            ? (int.Parse(_dbContext.Participants.Last().VariableSymbol!) + 1).ToString()
+            ? (int.Parse(_dbContext.Participants.Last().VariableSymbol) + 1).ToString()
             : $"{DateTime.Now.Year}001";
         participant.Ip = HttpContext.Connection.RemoteIpAddress!.ToString();
         _dbContext.Participants.Add(participant);
