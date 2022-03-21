@@ -25,4 +25,18 @@ public class Mutation
         dbContext.SaveChanges();
         return participant;
     }
+
+    public Participant UpdateParticipant([Service] ApplicationDbContext dbContext, int id, UpdateParticipant updateParticipant)
+    {
+        var toMerge = dbContext.Participants.Find(id);
+        if (toMerge is null) throw new Exception("Id not found");
+        
+        var merged = MapperUtil.Mapper.Map(updateParticipant, toMerge)!;
+        
+        var entry = dbContext.Entry(toMerge);
+        entry.CurrentValues.SetValues(merged);
+        dbContext.SaveChanges();
+        
+        return entry.Entity;
+    }
 }

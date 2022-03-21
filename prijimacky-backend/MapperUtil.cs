@@ -11,7 +11,11 @@ public static class MapperUtil
     static MapperUtil()
     {
         var config = new MapperConfiguration(cfg =>
-            cfg.CreateMap<NewParticipant, Participant>()
+            {
+                cfg.CreateMap<NewParticipant, Participant>();
+                cfg.CreateMap<UpdateParticipant, Participant>()
+                    .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+            }
         );
         Mapper = new Mapper(config);
     }
