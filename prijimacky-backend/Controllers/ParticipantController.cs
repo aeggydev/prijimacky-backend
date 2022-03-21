@@ -37,7 +37,7 @@ public class ParticipantController : ControllerBase
     [HttpPost]
     public Participant SignUp(NewParticipant newParticipant)
     {
-        var participant = _mapper.Map<Participant>(newParticipant);
+        var participant = MapperUtil.Mapper.Map<Participant>(newParticipant);
         participant.SignUpDate = DateTime.Now;
         participant.VariableSymbol = _dbContext.Participants.Any()
             ? (int.Parse(_dbContext.Participants.Last().VariableSymbol) + 1).ToString()

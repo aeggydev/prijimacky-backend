@@ -1,27 +1,29 @@
-﻿namespace prijimacky_backend.Graphql;
+﻿using System.Text.Json;
+using prijimacky_backend.Controllers;
+using prijimacky_backend.Data;
+using prijimacky_backend.Entities;
 
-public class Book
-{
-    public string Title { get; set; }
-
-    public Author Author { get; set; }
-}
-
-public class Author
-{
-    public string Name { get; set; }
-}
-
+namespace prijimacky_backend.Graphql;
 
 public class Query
 {
-    public Book GetBook() =>
-        new Book
-        {
-            Title = "C# in depth.",
-            Author = new Author
-            {
-                Name = "Jon Skeet"
-            }
-        };
+    public IEnumerable<Participant> GetParticipants([Service] ApplicationDbContext db) => db.Participants;
+}
+
+public class Mutation
+{
+    public Participant AddParticipant([Service] ApplicationDbContext dbContext,
+        [Service] IHttpContextAccessor httpContextAccessor, NewParticipant newParticipant)
+    {
+        var participant = MapperUtil.Mapper.Map<Participant>(newParticipant);
+        participant.SignUpDate = DateTime.Now;
+        participant.VariableSymbol = dbContext.Participants.Any()
+            ? (int.Parse(dbContext.Participants.Last().VariableSymbol) + 1).ToString()
+            : $"{DateTime.Now.Year}001";
+        participant.Ip = httpContextAccessor.HttpContext!.Connection.RemoteIpAddress!.ToString();
+        
+        dbContext.Participants.Add(participant);
+        dbContext.SaveChanges();
+        return participant;
+    }
 }
