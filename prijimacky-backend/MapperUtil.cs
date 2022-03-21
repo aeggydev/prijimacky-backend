@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using prijimacky_backend.Controllers;
+using prijimacky_backend.DTO;
 using prijimacky_backend.Entities;
 
 namespace prijimacky_backend;

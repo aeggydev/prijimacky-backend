@@ -1,6 +1,5 @@
-﻿using System.Text.Json;
-using prijimacky_backend.Controllers;
-using prijimacky_backend.Data;
+﻿using prijimacky_backend.Data;
+using prijimacky_backend.DTO;
 using prijimacky_backend.Entities;
 
 namespace prijimacky_backend.Graphql;
