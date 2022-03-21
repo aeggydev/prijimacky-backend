@@ -17,12 +17,12 @@ public record NewParticipant(
 
 [ApiController]
 [Route("[controller]")]
-public class SignUpController : ControllerBase
+public class ParticipantController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly Mapper _mapper;
 
-    public SignUpController(ApplicationDbContext dbContext)
+    public ParticipantController(ApplicationDbContext dbContext)
     {
         // TODO: Move automapper config elsewhere
         // TODO: Configure the whole object from here
@@ -37,7 +37,6 @@ public class SignUpController : ControllerBase
     [HttpPost]
     public Participant SignUp(NewParticipant newParticipant)
     {
-        Console.WriteLine(JsonSerializer.Serialize(newParticipant));
         var participant = _mapper.Map<Participant>(newParticipant);
         participant.SignUpDate = DateTime.Now;
         participant.VariableSymbol = _dbContext.Participants.Any()
@@ -46,6 +45,7 @@ public class SignUpController : ControllerBase
         participant.Ip = HttpContext.Connection.RemoteIpAddress!.ToString();
         _dbContext.Participants.Add(participant);
         _dbContext.SaveChanges();
+        Console.WriteLine(JsonSerializer.Serialize(newParticipant));
         return participant;
     }
 }
