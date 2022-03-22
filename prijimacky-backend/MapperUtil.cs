@@ -15,6 +15,8 @@ public static class MapperUtil
                 cfg.CreateMap<NewParticipant, Participant>();
                 cfg.CreateMap<UpdateParticipant, Participant>()
                     .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
+                cfg.CreateMap<UpdateSettings, Settings>()
+                    .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
             }
         );
         Mapper = new Mapper(config);

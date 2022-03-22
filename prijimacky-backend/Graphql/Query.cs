@@ -7,6 +7,7 @@ namespace prijimacky_backend.Graphql;
 public class Query
 {
     public IEnumerable<Participant> GetParticipants([Service] ApplicationDbContext db) => db.Participants;
+    public Settings GetSettings([Service] ApplicationDbContext db) => db.Settings;
 }
 
 public class Mutation
@@ -25,7 +26,6 @@ public class Mutation
         dbContext.SaveChanges();
         return participant;
     }
-
     public Participant UpdateParticipant([Service] ApplicationDbContext dbContext, int id, UpdateParticipant updateParticipant)
     {
         var toMerge = dbContext.Participants.Find(id);
@@ -37,6 +37,17 @@ public class Mutation
         entry.CurrentValues.SetValues(merged);
         dbContext.SaveChanges();
         
+        return entry.Entity;
+    }
+
+    public Settings UpdateSettings([Service] ApplicationDbContext dbContext, UpdateSettings updateSettings)
+    {
+        var toMerge = dbContext.Settings;
+        var merged = MapperUtil.Mapper.Map(updateSettings, toMerge)!;
+        var entry = dbContext.Entry(toMerge);
+        entry.CurrentValues.SetValues(merged);
+        dbContext.SaveChanges();
+
         return entry.Entity;
     }
 }
