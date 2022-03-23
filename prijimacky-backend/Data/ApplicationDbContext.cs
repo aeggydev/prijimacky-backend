@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext
             var settings = SettingsMultirow.SingleOrDefault();
             if (settings is not null) return settings;
 
+            // TODO: Move this somewhere else
             SettingsMultirow.Add(new Settings());
             SaveChanges();
             return SettingsMultirow.Single();

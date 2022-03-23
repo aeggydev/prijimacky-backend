@@ -19,6 +19,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+// Make this less specific
+app.UseCors(opt => opt.AllowAnyHeader().AllowAnyOrigin().AllowAnyHeader());
+
 app.MapControllers();
 
 app.MapGraphQL();
