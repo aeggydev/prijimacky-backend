@@ -18,6 +18,6 @@ public sealed class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseInMemoryDatabase("Application");
+        options.UseSqlite("Filename=TestDatabase.db");
     }
 }
