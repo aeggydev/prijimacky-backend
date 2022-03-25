@@ -15,6 +15,17 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbService = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+    if (dbService is null) throw new Exception();
+    
+    // Seed database (for settings)
+    // TODO: Replace this with migrations when moving away from InMemoryDatabase
+    dbService.Database.EnsureCreated();
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

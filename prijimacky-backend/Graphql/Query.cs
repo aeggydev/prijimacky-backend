@@ -1,6 +1,7 @@
 ﻿using prijimacky_backend.Data;
 using prijimacky_backend.DTO;
 using prijimacky_backend.Entities;
+using prijimacky_backend.Graphql.Types;
 
 namespace prijimacky_backend.Graphql;
 
@@ -8,6 +9,25 @@ public class Query
 {
     public IEnumerable<Participant> GetParticipants([Service] ApplicationDbContext db) => db.Participants;
     public Settings GetSettings([Service] ApplicationDbContext db) => db.Settings;
+
+    public Statistics GetStatistics([Service] ApplicationDbContext db)
+    {
+        var signupCount = db.Participants.Count();
+        var remaining = db.Settings.Capacity - signupCount;
+        var remainingOver = remaining switch
+        {
+            >= 0 => db.Settings.AllowedOver,
+            // Adds negative to positive, thus reducing the number
+            _ => db.Settings.AllowedOver + remaining
+        };
+        
+        return new Statistics(
+            signupCount, 
+            remaining >= 0 ? remaining : 0, 
+            remainingOver, 
+            0
+        );
+    }
 }
 
 public class Mutation
@@ -21,22 +41,24 @@ public class Mutation
             ? (int.Parse(dbContext.Participants.Last().VariableSymbol) + 1).ToString()
             : $"{DateTime.Now.Year}001";
         participant.Ip = httpContextAccessor.HttpContext!.Connection.RemoteIpAddress!.ToString();
-        
+
         dbContext.Participants.Add(participant);
         dbContext.SaveChanges();
         return participant;
     }
-    public Participant UpdateParticipant([Service] ApplicationDbContext dbContext, int id, UpdateParticipant updateParticipant)
+
+    public Participant UpdateParticipant([Service] ApplicationDbContext dbContext, int id,
+        UpdateParticipant updateParticipant)
     {
         var toMerge = dbContext.Participants.Find(id);
         if (toMerge is null) throw new Exception("Id not found");
-        
+
         var merged = MapperUtil.Mapper.Map(updateParticipant, toMerge)!;
-        
+
         var entry = dbContext.Entry(toMerge);
         entry.CurrentValues.SetValues(merged);
         dbContext.SaveChanges();
-        
+
         return entry.Entity;
     }
 

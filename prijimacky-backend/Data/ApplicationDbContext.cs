@@ -3,23 +3,17 @@ using prijimacky_backend.Entities;
 
 namespace prijimacky_backend.Data;
 
-public class ApplicationDbContext : DbContext
+public sealed class ApplicationDbContext : DbContext
 {
     public DbSet<Participant> Participants { get; set; } = default!;
 
     private DbSet<Settings> SettingsMultirow { get; set; } = default!;
-    public Settings Settings
-    {
-        get
-        {
-            var settings = SettingsMultirow.SingleOrDefault();
-            if (settings is not null) return settings;
+    public Settings Settings => SettingsMultirow.SingleOrDefault() ?? throw new Exception("Settings is null");
 
-            // TODO: Move this somewhere else
-            SettingsMultirow.Add(new Settings());
-            SaveChanges();
-            return SettingsMultirow.Single();
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Create single settings row
+        modelBuilder.Entity<Settings>().HasData(new Settings { Id = -1 });
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
