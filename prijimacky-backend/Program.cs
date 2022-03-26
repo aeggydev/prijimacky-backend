@@ -1,3 +1,6 @@
+using System.Globalization;
+using System.Text;
+using CsvHelper;
 using prijimacky_backend.Data;
 using prijimacky_backend.Graphql;
 
@@ -20,11 +23,22 @@ using (var serviceScope = app.Services.CreateScope())
 {
     var dbService = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
     if (dbService is null) throw new Exception();
-    
+
     // Seed database (for settings)
     // TODO: Replace this with migrations when moving away from InMemoryDatabase
     dbService.Database.EnsureCreated();
 }
+
+app.MapGet("/file/table.csv", ([Service] ApplicationDbContext db) =>
+{
+    // TODO: Use czech header cells
+    
+    using MemoryStream memoryStream = new();
+    using StreamWriter writer = new(memoryStream, Encoding.UTF8);
+    using CsvWriter csv = new(writer, CultureInfo.InvariantCulture);
+    csv.WriteRecords(db.Participants);
+    return Results.File(memoryStream.GetBuffer(), "text/csv", "table.csv");
+});
 
 app.UseHttpsRedirection();
 
