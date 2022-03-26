@@ -39,7 +39,7 @@ public class Mutation
         var participant = MapperUtil.Mapper.Map<Participant>(newParticipant);
         participant.SignUpDate = DateTime.Now;
         participant.VariableSymbol = dbContext.Participants.Any()
-            ? (int.Parse(dbContext.Participants.Last().VariableSymbol) + 1).ToString()
+            ? (int.Parse(dbContext.Participants.OrderBy(p => p.Id).Last().VariableSymbol) + 1).ToString()
             : $"{DateTime.Now.Year}001";
         participant.Ip = httpContextAccessor.HttpContext!.Connection.RemoteIpAddress!.ToString();
 
@@ -73,7 +73,7 @@ public class Mutation
             if (toMerge is null) throw new Exception("Id not found");
 
             var merged = MapperUtil.Mapper.Map(updateParticipant, toMerge)!;
-            
+
             var entry = dbContext.Entry(toMerge);
             entry.CurrentValues.SetValues(merged);
             entryAccumulator.Add(entry);
