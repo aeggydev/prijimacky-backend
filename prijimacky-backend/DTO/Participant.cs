@@ -8,6 +8,7 @@ public record NewParticipant(
     string School,
     string Phone,
     string Email);
+
 public record UpdateParticipant(
     string? ParticipantName,
     string? ParticipantSurname,
@@ -17,3 +18,8 @@ public record UpdateParticipant(
     string? Phone,
     string? Email,
     DateTime? PaidDate);
+
+// TODO: Used for batch updating
+public record UpdateParticipantsItem(
+    int Id,
+    UpdateParticipant data);

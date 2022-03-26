@@ -1,4 +1,5 @@
-﻿using prijimacky_backend.Data;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using prijimacky_backend.Data;
 using prijimacky_backend.DTO;
 using prijimacky_backend.Entities;
 using prijimacky_backend.Graphql.Types;
@@ -20,11 +21,11 @@ public class Query
             // Adds negative to positive, thus reducing the number
             _ => db.Settings.AllowedOver + remaining
         };
-        
+
         return new Statistics(
-            signupCount, 
-            remaining >= 0 ? remaining : 0, 
-            remainingOver, 
+            signupCount,
+            remaining >= 0 ? remaining : 0,
+            remainingOver,
             0
         );
     }
@@ -60,6 +61,26 @@ public class Mutation
         dbContext.SaveChanges();
 
         return entry.Entity;
+    }
+
+    public IEnumerable<Participant> UpdateParticipants([Service] ApplicationDbContext dbContext,
+        List<UpdateParticipantsItem> updateParticipants)
+    {
+        List<EntityEntry<Participant>> entryAccumulator = new();
+        foreach (var (id, updateParticipant) in updateParticipants)
+        {
+            var toMerge = dbContext.Participants.Find(id);
+            if (toMerge is null) throw new Exception("Id not found");
+
+            var merged = MapperUtil.Mapper.Map(updateParticipant, toMerge)!;
+            
+            var entry = dbContext.Entry(toMerge);
+            entry.CurrentValues.SetValues(merged);
+            entryAccumulator.Add(entry);
+        }
+
+        dbContext.SaveChanges();
+        return entryAccumulator.Select(x => x.Entity);
     }
 
     public Settings UpdateSettings([Service] ApplicationDbContext dbContext, UpdateSettings updateSettings)
