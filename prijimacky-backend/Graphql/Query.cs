@@ -29,7 +29,7 @@ public class Query
         };
         var token = new JwtSecurityToken(
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
-            expires: DateTime.Now.AddMinutes(20),
+            expires: DateTime.Now.AddDays(14),
             claims: authClaims);
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
