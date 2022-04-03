@@ -5,6 +5,7 @@ namespace prijimacky_backend.Data;
 
 public sealed class ApplicationDbContext : DbContext
 {
+    public DbSet<Admin> Admins { get; set; } = default!;
     public DbSet<Participant> Participants { get; set; } = default!;
 
     private DbSet<Settings> SettingsMultirow { get; set; } = default!;

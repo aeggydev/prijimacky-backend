@@ -1,4 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using HotChocolate.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.IdentityModel.Tokens;
 using prijimacky_backend.Data;
 using prijimacky_backend.DTO;
 using prijimacky_backend.Entities;
@@ -8,9 +13,34 @@ namespace prijimacky_backend.Graphql;
 
 public class Query
 {
+    public string Login([Service] ApplicationDbContext db, [Service] IConfiguration config, LoginInfo login)
+    {
+        var admin = db.Admins
+            .FirstOrDefault(a => a.Username == login.Username);
+        if (admin is null) throw new Exception("Invalid username");
+        
+        if (!admin.CheckPassword(login.Password)) throw new Exception("Invalid password");
+
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Secret"]));
+        var authClaims = new List<Claim>
+        {
+            new("sub", login.Username),
+            new(ClaimTypes.Role, "Admin")
+        };
+        var token = new JwtSecurityToken(
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256),
+            expires: DateTime.Now.AddMinutes(20),
+            claims: authClaims);
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    [Authorize(Roles = new[] { "Admin" })]
     public IEnumerable<Participant> GetParticipants([Service] ApplicationDbContext db) => db.Participants;
+
+    [Authorize(Roles = new[] { "Admin" })]
     public Settings GetSettings([Service] ApplicationDbContext db) => db.Settings;
 
+    [Authorize(Roles = new[] { "Admin" })]
     public Statistics GetStatistics([Service] ApplicationDbContext db)
     {
         var signupCount = db.Participants.Count();
@@ -48,6 +78,7 @@ public class Mutation
         return participant;
     }
 
+    [Authorize(Roles = new[] { "Admin" })]
     public Participant UpdateParticipant([Service] ApplicationDbContext dbContext, int id,
         UpdateParticipant updateParticipant)
     {
@@ -63,6 +94,7 @@ public class Mutation
         return entry.Entity;
     }
 
+    [Authorize(Roles = new[] { "Admin" })]
     public IEnumerable<Participant> UpdateParticipants([Service] ApplicationDbContext dbContext,
         List<UpdateParticipantsItem> updateParticipants)
     {
@@ -83,6 +115,7 @@ public class Mutation
         return entryAccumulator.Select(x => x.Entity);
     }
 
+    [Authorize(Roles = new[] { "Admin" })]
     public Settings UpdateSettings([Service] ApplicationDbContext dbContext, UpdateSettings updateSettings)
     {
         var toMerge = dbContext.Settings;
@@ -92,5 +125,23 @@ public class Mutation
         dbContext.SaveChanges();
 
         return entry.Entity;
+    }
+
+    [Authorize(Roles = new[] { "Admin" })]
+    public int AddAdmin([Service] ApplicationDbContext db, LoginInfo login)
+    {
+        if (db.Admins.Any(x => x.Username == login.Username))
+            throw new Exception("Username already exists");
+        
+        var salt = BCrypt.Net.BCrypt.GenerateSalt();
+        var hash = BCrypt.Net.BCrypt.HashPassword(login.Password, salt);
+        var admin = new Admin
+        {
+            PasswordHash = hash,
+            Username = login.Username
+        };
+        db.Admins.Add(admin);
+        db.SaveChanges();
+        return admin.Id;
     }
 }
