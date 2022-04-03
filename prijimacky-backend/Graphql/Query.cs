@@ -118,10 +118,8 @@ public class Mutation
     [Authorize(Roles = new[] { "Admin" })]
     public Settings UpdateSettings([Service] ApplicationDbContext dbContext, UpdateSettings updateSettings)
     {
-        var toMerge = dbContext.Settings;
-        var merged = MapperUtil.Mapper.Map(updateSettings, toMerge)!;
-        var entry = dbContext.Entry(toMerge);
-        entry.CurrentValues.SetValues(merged);
+        var entry = dbContext.Entry(dbContext.Settings);
+        entry.CurrentValues.SetValues(updateSettings);
         dbContext.SaveChanges();
 
         return entry.Entity;
