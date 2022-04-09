@@ -15,6 +15,9 @@ public sealed class ApplicationDbContext : DbContext
     {
         // Create single settings row
         modelBuilder.Entity<Settings>().HasData(new Settings { Id = -1 });
+        // TODO: Remove this for a configuration tool
+        modelBuilder.Entity<Admin>().HasData(new Admin
+            { Id = -1, Username = "default_admin", PasswordHash = BCrypt.Net.BCrypt.HashPassword("default_password") });
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
