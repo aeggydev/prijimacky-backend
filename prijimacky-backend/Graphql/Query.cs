@@ -37,10 +37,8 @@ public class Query
     [Authorize(Roles = new[] { "Admin" })]
     public IEnumerable<Participant> GetParticipants([Service] ApplicationDbContext db) => db.Participants;
 
-    [Authorize(Roles = new[] { "Admin" })]
     public Settings GetSettings([Service] ApplicationDbContext db) => db.Settings;
 
-    [Authorize(Roles = new[] { "Admin" })]
     public Statistics GetStatistics([Service] ApplicationDbContext db)
     {
         var signupCount = db.Participants.Count();
@@ -54,6 +52,7 @@ public class Query
 
         return new Statistics(
             signupCount,
+            db.Settings.Capacity,
             remaining >= 0 ? remaining : 0,
             remainingOver,
             0
