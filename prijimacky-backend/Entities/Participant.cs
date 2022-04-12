@@ -34,7 +34,7 @@ public class Participant
     public bool IsOver => !IsPaid && DateTime.Now > DueDate;
 
     // Notified about creation and with payment info
-    public bool CreationNotified { get; set; } = false;
+    public bool CreationNotified { get; set; } = true;
 
     // Notified that participant was canceled due to lack of payment
     public bool CancelationNotified { get; set; } = false;
