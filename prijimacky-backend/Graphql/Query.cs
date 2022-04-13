@@ -129,7 +129,7 @@ public class Mutation
     {
         if (db.Admins.Any(x => x.Username == login.Username))
             throw new Exception("Username already exists");
-        
+
         var salt = BCrypt.Net.BCrypt.GenerateSalt();
         var hash = BCrypt.Net.BCrypt.HashPassword(login.Password, salt);
         var admin = new Admin
@@ -140,5 +140,15 @@ public class Mutation
         db.Admins.Add(admin);
         db.SaveChanges();
         return admin.Id;
+    }
+
+    [Authorize(Roles = new[] { "Admin" })]
+    public bool RemoveParticipant([Service] ApplicationDbContext db, int id)
+    {
+        var participant = db.Participants.Find(id);
+        if (participant is null) return false;
+        db.Participants.Remove(participant);
+        db.SaveChanges();
+        return true;
     }
 }
