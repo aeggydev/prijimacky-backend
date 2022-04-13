@@ -176,4 +176,15 @@ public class Mutation
         db.SaveChanges();
         return true;
     }
+
+    [Authorize(Roles = new[] { "Admin" })]
+    public bool ForceCancelationStatus([Service] ApplicationDbContext db, int id, bool value)
+    {
+        var participant = db.Participants.Find(id);
+        if (participant is null) return false;
+        // TODO: Send email
+        participant.CancelationNotified = value;
+        db.SaveChanges();
+        return true;
+    }
 }
