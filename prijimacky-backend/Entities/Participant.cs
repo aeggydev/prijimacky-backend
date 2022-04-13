@@ -45,10 +45,10 @@ public class Participant
     public ParticipantStatus Status => this switch
     {
         { CreationNotified: false } => ParticipantStatus.NotNotified,
+        { CreationNotified: true, CancelationNotified: true } => ParticipantStatus.Canceled,
         { PaidNotified: true, IsOver: true } => ParticipantStatus.Error,
         { CreationNotified: true, IsPaid: false, IsOver: false } => ParticipantStatus.Unpaid,
         { CreationNotified: true, IsOver: true, CancelationNotified: false } => ParticipantStatus.UnpaidLate,
-        { CreationNotified: true, IsOver: true, CancelationNotified: true } => ParticipantStatus.Canceled,
         { CreationNotified: true, IsPaid: true, PaidNotified: false } => ParticipantStatus.PaidUnconfirmed,
         { CreationNotified: true, IsPaid: true, PaidNotified: true } => ParticipantStatus.PaidConfirmed,
         _ => ParticipantStatus.Error
