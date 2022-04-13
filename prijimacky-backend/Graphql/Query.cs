@@ -151,4 +151,29 @@ public class Mutation
         db.SaveChanges();
         return true;
     }
+
+    [Authorize(Roles = new[] { "Admin" })]
+    public bool ConfirmPayment([Service] ApplicationDbContext db, int id)
+    {
+        var participant = db.Participants.Find(id);
+        if (participant is null) return false;
+        if (participant.Status != ParticipantStatus.PaidUnconfirmed) return false;
+        // TODO: Send email
+        participant.PaidNotified = true;
+        db.SaveChanges();
+        return true;
+    }
+    
+    
+    [Authorize(Roles = new[] { "Admin" })]
+    public bool ConfirmLateCancel([Service] ApplicationDbContext db, int id)
+    {
+        var participant = db.Participants.Find(id);
+        if (participant is null) return false;
+        if (participant.Status != ParticipantStatus.UnpaidLate) return false;
+        // TODO: Send email
+        participant.CancelationNotified = true;
+        db.SaveChanges();
+        return true;
+    }
 }
