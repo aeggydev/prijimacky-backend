@@ -58,6 +58,18 @@ public class Query
             0
         );
     }
+
+    public EmailStatistics GetEmailStatistics([Service] ApplicationDbContext db)
+    {
+        var participants = db.Participants.ToList();
+        return new EmailStatistics(
+            participants.Count(x => x.Status == ParticipantStatus.PaidConfirmed),
+            participants.Count(x => x.Status == ParticipantStatus.PaidUnconfirmed),
+            participants.Count(x => x.Status == ParticipantStatus.UnpaidLate),
+            participants.Count(x => x.Status == ParticipantStatus.Unpaid),
+            participants.Count(x => x.Status == ParticipantStatus.Canceled),
+            0); // TODO: Add actual free spot counting
+    }
 }
 
 public class Mutation
