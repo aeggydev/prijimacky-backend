@@ -37,4 +37,7 @@ public interface IStatisticsService
 public interface IEmailService
 {
     EmailStatistics GetStatistics();
+    bool SendPaymentConfirmation(Participant participant);
+    bool SendCancelConfirmation(Participant participant);
+    bool SendForcedChangeConfirmation(Participant participant, bool status);
 }

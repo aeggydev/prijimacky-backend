@@ -74,7 +74,7 @@ public class ParticipantService : IParticipantService
         var participant = _db.Participants.Find(id);
         if (participant is null) return false;
         if (participant.Status != ParticipantStatus.PaidUnconfirmed) return false;
-        // TODO: Send email
+        _email.SendPaymentConfirmation(participant);
         participant.PaidNotified = true;
         _db.SaveChanges();
         return true;
@@ -85,7 +85,7 @@ public class ParticipantService : IParticipantService
         var participant = _db.Participants.Find(id);
         if (participant is null) return false;
         if (participant.Status != ParticipantStatus.UnpaidLate) return false;
-        // TODO: Send email
+        _email.SendCancelConfirmation(participant);
         participant.CancelationNotified = true;
         _db.SaveChanges();
         return true;
@@ -95,7 +95,7 @@ public class ParticipantService : IParticipantService
     {
         var participant = _db.Participants.Find(id);
         if (participant is null) return false;
-        // TODO: Send email
+        _email.SendForcedChangeConfirmation(participant, status);
         participant.CancelationNotified = status;
         _db.SaveChanges();
         return true;
