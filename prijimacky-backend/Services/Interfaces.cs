@@ -37,7 +37,8 @@ public interface IStatisticsService
 public interface IEmailService
 {
     EmailStatistics GetStatistics();
-    bool SendPaymentConfirmation(Participant participant);
-    bool SendCancelConfirmation(Participant participant);
-    bool SendForcedChangeConfirmation(Participant participant, bool status);
+    Task<bool> SendPaymentConfirmation(Participant participant);
+    Task<bool> SendCancelConfirmation(Participant participant);
+    Task<bool> SendForcedChangeConfirmation(Participant participant, bool status);
+    // emails: https://docs.google.com/document/d/1VzHYK9jW2UXz3cQ49GuLBkihUW_k1osU738rdpLtDdY/edit?usp=sharing
 }
