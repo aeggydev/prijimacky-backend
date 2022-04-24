@@ -7,10 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using prijimacky_backend.Data;
 using prijimacky_backend.Graphql;
+using prijimacky_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddGraphQLServer()
@@ -19,6 +18,12 @@ builder.Services.AddGraphQLServer()
     .AddErrorFilter<GraphQLErrorFilter>()
     .AddAuthorization();
 builder.Services.AddDbContext<ApplicationDbContext>();
+
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
