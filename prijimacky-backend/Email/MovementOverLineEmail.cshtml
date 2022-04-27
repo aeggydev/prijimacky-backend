@@ -1,0 +1,12 @@
+﻿@model prijimacky_backend.Entities.Participant
+@{
+	Layout = "_Layout.cshtml";
+	var dueDate = Model.DueDate.ToString("dd. MM. yyyy");
+}
+přihlásili jste se na PŘIJÍMAČKY NANEČISTO, které se konají v budově SPŠ Brno, Purkyňova, příspěvková organizace.
+
+Uvolnilo se místo nad Vámi a přihláška je nyní nad čárou.
+
+Do 14 dní (@dueDate) prosím uhraďte částku XXX Kč na účet XXXXXXXXXX/XXXX. Jako variabilní symbol uveďte @Model.VariableSymbol.
+
+Po přijetí platby obdržíte potvrzovací e-mail.

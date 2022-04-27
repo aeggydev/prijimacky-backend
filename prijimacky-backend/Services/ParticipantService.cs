@@ -75,7 +75,7 @@ public class ParticipantService : IParticipantService
         if (participant is null) return false;
         if (participant.Status != ParticipantStatus.PaidUnconfirmed) return false;
         _email.SendPaymentConfirmation(participant);
-        participant.PaidNotified = true;
+        //participant.PaidNotified = true;
         _db.SaveChanges();
         return true;
     }
@@ -86,7 +86,7 @@ public class ParticipantService : IParticipantService
         if (participant is null) return false;
         if (participant.Status != ParticipantStatus.UnpaidLate) return false;
         _email.SendCancelConfirmation(participant);
-        participant.CancelationNotified = true;
+        //participant.CancelationNotified = true;
         _db.SaveChanges();
         return true;
     }

@@ -37,6 +37,10 @@ public interface IStatisticsService
 public interface IEmailService
 {
     EmailStatistics GetStatistics();
+    Task<bool> SendSignupEmail(Participant participant);
+    Task<bool> SendUnderLineEmail(Participant participant);
+    Task<bool> SendMovemenetOverLineEmail(Participant participant);
+    Task<bool> SendBeforeEventEmail(Participant participant);
     Task<bool> SendPaymentConfirmation(Participant participant);
     Task<bool> SendCancelConfirmation(Participant participant);
     Task<bool> SendForcedChangeConfirmation(Participant participant, bool status);
