@@ -63,4 +63,9 @@ public class Mutation
     [Authorize(Roles = new[] { "Admin" })]
     public Task<bool> StatusAction([Service] IParticipantService participantService, int id, ParticipantStatus presumedStatus) =>
         participantService.StatusAction(id, presumedStatus);
+
+    [Authorize(Roles = new[] { "Admin" })]
+    public Task<bool> StatusActionAllOfStatus([Service] IParticipantService participantService,
+        ParticipantStatus expectedStatus) =>
+        participantService.StatusActionAllOfStatus(expectedStatus);
 }

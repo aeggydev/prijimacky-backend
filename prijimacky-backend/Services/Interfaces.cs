@@ -22,6 +22,7 @@ public interface IParticipantService
     bool Delete(int id);
 
     Task<bool> StatusAction(int id, ParticipantStatus presumedStatus);
+    Task<bool> StatusActionAllOfStatus(ParticipantStatus expectedStatus);
     // handle status, presumedStatus specifies the status that the frontend thinks is currently set 
     // returns false if presumedStatus doesn't patch
 }
@@ -38,5 +39,6 @@ public interface IEmailService
 {
     EmailStatistics GetStatistics();
     Task<bool> StatusAction(Participant participant, ParticipantStatus presumedStatus);
+    // not implemented for now: Task<bool> StatusActionAllOfStatus(ParticipantStatus expectedStatus);
     // emails: https://docs.google.com/document/d/1VzHYK9jW2UXz3cQ49GuLBkihUW_k1osU738rdpLtDdY/edit?usp=sharing
 }

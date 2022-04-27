@@ -99,4 +99,17 @@ public class ParticipantService : IParticipantService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<bool> StatusActionAllOfStatus(ParticipantStatus expectedStatus)
+    {
+        var participants = _db.Participants
+            .ToList()
+            .Where(p => p.Status == expectedStatus);
+        foreach (var participant in participants)
+        {
+            await StatusAction(participant.Id, expectedStatus);
+        }
+
+        return true;
+    }
 }
