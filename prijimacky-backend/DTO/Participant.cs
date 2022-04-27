@@ -17,7 +17,8 @@ public record UpdateParticipant(
     string? School,
     string? Phone,
     string? Email,
-    DateTime? PaidDate);
+    DateOnly? DueDate,
+    DateOnly? PaidDate);
 
 // TODO: Used for batch updating
 public record UpdateParticipantsItem(

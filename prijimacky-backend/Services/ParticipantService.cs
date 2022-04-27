@@ -23,6 +23,7 @@ public class ParticipantService : IParticipantService
     {
         var participant = MapperUtil.Mapper.Map<Participant>(newParticipant);
         participant.SignUpDate = DateTime.Now;
+        participant.DueDate = DateOnly.FromDateTime(DateTime.Now).AddDays(14);
         participant.VariableSymbol = _db.Participants.Any()
             ? (int.Parse(_db.Participants.OrderBy(p => p.Id).Last().VariableSymbol) + 1).ToString()
             : $"{DateTime.Now.Year}001";
@@ -74,7 +75,7 @@ public class ParticipantService : IParticipantService
         var participant = _db.Participants.Find(id);
         if (participant is null) throw new Exception("Id not found");
         if (presumedStatus != participant.Status) throw new Exception("Status mismatch");
-        
+
         await _email.StatusAction(participant, presumedStatus);
         // TODO: Handle return and exceptions
         switch (presumedStatus)

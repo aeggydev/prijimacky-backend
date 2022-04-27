@@ -27,11 +27,11 @@ public class Participant
     [Name("IP adresa")] public string Ip { get; set; } = "";
     [Name("Variabilní symbol")] public string VariableSymbol { get; set; } = "";
     [Name("Datum přihlášení")] public DateTime SignUpDate { get; set; }
-    [Name("Datum splatnosti")] public DateTime DueDate => SignUpDate.AddDays(15);
-    [Name("Datum uhrazení")] public DateTime? PaidDate { get; set; }
+    [Name("Datum splatnosti")] public DateOnly DueDate { get; set; }
+    [Name("Datum uhrazení")] public DateOnly? PaidDate { get; set; }
 
     public bool IsPaid => PaidDate != null;
-    public bool IsOver => !IsPaid && DateTime.Now > DueDate;
+    public bool IsOver => !IsPaid && DateOnly.FromDateTime(DateTime.Now) > DueDate;
 
     // Notified about creation and with payment info
     public bool CreationNotified { get; set; } = true;

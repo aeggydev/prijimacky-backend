@@ -14,6 +14,7 @@ public static class MapperUtil
             {
                 cfg.CreateMap<NewParticipant, Participant>();
                 cfg.CreateMap<UpdateParticipant, Participant>()
+                    .ForMember(dest => dest.DueDate, opt => opt.MapFrom((src, dest) => src.DueDate ?? dest.DueDate))
                     .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
                 cfg.CreateMap<UpdateSettings, Settings>()
                     .ForAllMembers(opts => opts.Condition((_, _, srcMember) => srcMember != null));
