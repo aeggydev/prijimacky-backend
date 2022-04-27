@@ -53,4 +53,5 @@ public class Participant
         { CreationNotified: true, IsPaid: true, PaidNotified: true } => ParticipantStatus.PaidConfirmed,
         _ => ParticipantStatus.Error
     };
+    // TODO: Handle being over the limit
 }

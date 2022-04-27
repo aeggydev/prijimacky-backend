@@ -69,35 +69,34 @@ public class ParticipantService : IParticipantService
         return true;
     }
 
-    public bool ConfirmPayment(int id)
+    public async Task<bool> StatusAction(int id, ParticipantStatus presumedStatus)
     {
         var participant = _db.Participants.Find(id);
-        if (participant is null) return false;
-        if (participant.Status != ParticipantStatus.PaidUnconfirmed) return false;
-        _email.SendPaymentConfirmation(participant);
-        //participant.PaidNotified = true;
-        _db.SaveChanges();
-        return true;
-    }
+        if (participant is null) throw new Exception("Id not found");
+        if (presumedStatus != participant.Status) throw new Exception("Status mismatch");
+        
+        await _email.StatusAction(participant, presumedStatus);
+        // TODO: Handle return and exceptions
+        switch (presumedStatus)
+        {
+            case ParticipantStatus.NotNotified:
+                participant.CreationNotified = true;
+                break;
+            case ParticipantStatus.PaidUnconfirmed:
+                participant.PaidNotified = true;
+                break;
+            case ParticipantStatus.UnpaidLate:
+                participant.CancelationNotified = true;
+                break;
+            case ParticipantStatus.Unpaid:
+            case ParticipantStatus.Canceled:
+            case ParticipantStatus.PaidConfirmed:
+            case ParticipantStatus.Error:
+            default:
+                break;
+        }
 
-    public bool ConfirmLateCancel(int id)
-    {
-        var participant = _db.Participants.Find(id);
-        if (participant is null) return false;
-        if (participant.Status != ParticipantStatus.UnpaidLate) return false;
-        _email.SendCancelConfirmation(participant);
-        //participant.CancelationNotified = true;
-        _db.SaveChanges();
-        return true;
-    }
-
-    public bool ForceCancel(int id, bool status)
-    {
-        var participant = _db.Participants.Find(id);
-        if (participant is null) return false;
-        _email.SendForcedChangeConfirmation(participant, status);
-        participant.CancelationNotified = status;
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
         return true;
     }
 }

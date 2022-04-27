@@ -61,15 +61,6 @@ public class Mutation
         participantService.Delete(id);
 
     [Authorize(Roles = new[] { "Admin" })]
-    public bool ConfirmPayment([Service] IParticipantService participantService, int id) =>
-        participantService.ConfirmPayment(id);
-
-
-    [Authorize(Roles = new[] { "Admin" })]
-    public bool ConfirmLateCancel([Service] IParticipantService participantService, int id) =>
-        participantService.ConfirmLateCancel(id);
-
-    [Authorize(Roles = new[] { "Admin" })]
-    public bool ForceCancelationStatus([Service] IParticipantService participantService, int id, bool value) =>
-        participantService.ForceCancel(id, value);
+    public Task<bool> StatusAction([Service] IParticipantService participantService, int id, ParticipantStatus presumedStatus) =>
+        participantService.StatusAction(id, presumedStatus);
 }

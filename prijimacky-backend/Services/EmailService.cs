@@ -40,50 +40,17 @@ public class EmailService : IEmailService
             0); // TODO: Add actual free spot counting
     }
 
-    public async Task<bool> SendSignupEmail(Participant participant)
+    public async Task<bool> StatusAction(Participant participant, ParticipantStatus presumedStatus)
     {
-        var html = await _razorEngine.CompileRenderAsync("CreationEmail.cshtml", participant);
+        var templateFile = presumedStatus switch
+        {
+            ParticipantStatus.NotNotified => "CreationEmail.cshtml",
+            ParticipantStatus.UnpaidLate => "LateCancelationEmail.cshtml",
+            ParticipantStatus.PaidUnconfirmed => "ConfirmationEmail.cshtml",
+            _ => throw new Exception("This status is not supported yet")
+        };
+        var html = await _razorEngine.CompileRenderAsync(templateFile, participant);
         DebugHtml(html);
         return true;
-    }
-
-    public async Task<bool> SendUnderLineEmail(Participant participant)
-    {
-        var html = await _razorEngine.CompileRenderAsync("UnderLine.cshtml", participant);
-        DebugHtml(html);
-        return true;
-    }
-
-    public async Task<bool> SendMovemenetOverLineEmail(Participant participant)
-    {
-        var html = await _razorEngine.CompileRenderAsync("MovementOverLineEmail.cshtml", participant);
-        DebugHtml(html);
-        return true;
-    }
-
-    public async Task<bool> SendBeforeEventEmail(Participant participant)
-    {
-        var html = await _razorEngine.CompileRenderAsync("BeforeEventEmail.cshtml", participant);
-        DebugHtml(html);
-        return true;
-    }
-
-    public async Task<bool> SendPaymentConfirmation(Participant participant)
-    {
-        var html = await _razorEngine.CompileRenderAsync("ConfirmationEmail.cshtml", participant);
-        DebugHtml(html);
-        return true;
-    }
-
-    public async Task<bool> SendCancelConfirmation(Participant participant)
-    {
-        var html = await _razorEngine.CompileRenderAsync("LateCancelationEmail.cshtml", participant);
-        DebugHtml(html);
-        return true;
-    }
-
-    public Task<bool> SendForcedChangeConfirmation(Participant participant, bool status)
-    {
-        throw new NotImplementedException();
     }
 }

@@ -21,9 +21,9 @@ public interface IParticipantService
     IEnumerable<Participant> UpdateMultiple(IEnumerable<UpdateParticipantsItem> inputs);
     bool Delete(int id);
 
-    bool ConfirmPayment(int id);
-    bool ConfirmLateCancel(int id);
-    bool ForceCancel(int id, bool status);
+    Task<bool> StatusAction(int id, ParticipantStatus presumedStatus);
+    // handle status, presumedStatus specifies the status that the frontend thinks is currently set 
+    // returns false if presumedStatus doesn't patch
 }
 public interface ISettingsService
 {
@@ -37,12 +37,6 @@ public interface IStatisticsService
 public interface IEmailService
 {
     EmailStatistics GetStatistics();
-    Task<bool> SendSignupEmail(Participant participant);
-    Task<bool> SendUnderLineEmail(Participant participant);
-    Task<bool> SendMovemenetOverLineEmail(Participant participant);
-    Task<bool> SendBeforeEventEmail(Participant participant);
-    Task<bool> SendPaymentConfirmation(Participant participant);
-    Task<bool> SendCancelConfirmation(Participant participant);
-    Task<bool> SendForcedChangeConfirmation(Participant participant, bool status);
+    Task<bool> StatusAction(Participant participant, ParticipantStatus presumedStatus);
     // emails: https://docs.google.com/document/d/1VzHYK9jW2UXz3cQ49GuLBkihUW_k1osU738rdpLtDdY/edit?usp=sharing
 }
