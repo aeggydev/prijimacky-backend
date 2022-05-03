@@ -113,4 +113,14 @@ public class ParticipantService : IParticipantService
 
         return true;
     }
+
+    public bool ClearPaid(int id)
+    {
+        var participant = _db.Participants.Find(id);
+        if (participant is null) throw new Exception("Id not found");
+
+        participant.PaidDate = null;
+        _db.SaveChanges();
+        return true;
+    }
 }

@@ -25,6 +25,9 @@ public interface IParticipantService
     Task<bool> StatusActionAllOfStatus(ParticipantStatus expectedStatus);
     // handle status, presumedStatus specifies the status that the frontend thinks is currently set 
     // returns false if presumedStatus doesn't patch
+
+    bool ClearPaid(int id);
+    // clears the paid property of the participant
 }
 public interface ISettingsService
 {

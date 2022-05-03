@@ -68,4 +68,7 @@ public class Mutation
     public Task<bool> StatusActionAllOfStatus([Service] IParticipantService participantService,
         ParticipantStatus expectedStatus) =>
         participantService.StatusActionAllOfStatus(expectedStatus);
+    
+    public bool ClearPaid([Service] IParticipantService participantService, int id) =>
+        participantService.ClearPaid(id);
 }
