@@ -42,8 +42,11 @@ public class Participant
     // Notified that payment received and confirmed
     public bool PaidNotified { get; set; } = false;
 
+    public bool ForceCanceled { get; set; } = false;
+
     public ParticipantStatus Status => this switch
     {
+        { ForceCanceled: true } => ParticipantStatus.Canceled,
         { CreationNotified: false } => ParticipantStatus.NotNotified,
         { CreationNotified: true, CancelationNotified: true } => ParticipantStatus.Canceled,
         { PaidNotified: true, IsOver: true } => ParticipantStatus.Error,

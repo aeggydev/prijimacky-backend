@@ -27,6 +27,7 @@ public interface IParticipantService
     // returns false if presumedStatus doesn't patch
 
     bool ClearPaid(int id);
+    bool ForceCancelationStatus(int id, bool value);
     // clears the paid property of the participant
 }
 public interface ISettingsService

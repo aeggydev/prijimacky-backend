@@ -61,14 +61,18 @@ public class Mutation
         participantService.Delete(id);
 
     [Authorize(Roles = new[] { "Admin" })]
-    public Task<bool> StatusAction([Service] IParticipantService participantService, int id, ParticipantStatus presumedStatus) =>
+    public Task<bool> StatusAction([Service] IParticipantService participantService, int id,
+        ParticipantStatus presumedStatus) =>
         participantService.StatusAction(id, presumedStatus);
 
     [Authorize(Roles = new[] { "Admin" })]
     public Task<bool> StatusActionAllOfStatus([Service] IParticipantService participantService,
         ParticipantStatus expectedStatus) =>
         participantService.StatusActionAllOfStatus(expectedStatus);
-    
+
     public bool ClearPaid([Service] IParticipantService participantService, int id) =>
         participantService.ClearPaid(id);
+
+    public bool ForceCancelationStatus([Service] IParticipantService participantService, int id, bool value) =>
+        participantService.ForceCancelationStatus(id, value);
 }

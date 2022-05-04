@@ -123,4 +123,14 @@ public class ParticipantService : IParticipantService
         _db.SaveChanges();
         return true;
     }
+
+    public bool ForceCancelationStatus(int id, bool value)
+    {
+        var participant = _db.Participants.Find(id);
+        if (participant is null) throw new Exception("Id not found");
+
+        participant.ForceCanceled = value;
+        _db.SaveChanges();
+        return true;
+    }
 }
